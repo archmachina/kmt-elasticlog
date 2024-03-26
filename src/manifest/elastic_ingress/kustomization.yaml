@@ -1,0 +1,20 @@
+---
+
+kind: Component
+
+resources:
+  - daemonset.yaml
+
+replacements:
+  - source:
+      kind: ConfigMap
+      name: elastic-config
+      fieldPath: data.ingress_host_port
+    targets:
+      - select:
+          group: apps
+          version: v1
+          kind: DaemonSet
+          name: elastic-ingress-ds
+        fieldPaths:
+          - spec.template.spec.containers.[name=ingress].ports.[containerPort=9200].hostPort

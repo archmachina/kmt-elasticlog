@@ -1,0 +1,45 @@
+---
+
+vars:
+  environment: "{{ env.ENVNAME | default('dev') }}"
+  namespace: "{{ env.ENVNAME | default('elasticlog') }}"
+  labels:
+    app: elasticlog
+  annotations: {}
+
+pipeline:
+  - type: config
+    stdin: true
+    when: "env.STDIN_CONFIG | default('0') == '1'"
+
+  - type: import
+    recursive: true
+    files:
+      - manifest/**/*.yaml
+    apply_tags:
+      - import_yaml
+
+  - type: template
+
+  # Set common namespace, annotations and labels for all objects
+  - type: metadata
+    namespace: "{{ namespace }}"
+    annotations: "{{ annotations }}"
+    labels: "{{ labels }}"
+
+  # Apply the stakater reload
+  - type: metadata
+    annotations:
+      reloader.stakater.com/auto: "true"
+    match_kind: "^DaemonSet$|^StatefulSet$|^Deployment$"
+
+  - type: metadata
+    annotations:
+      kubernetes.io/ingress.class: nginx
+      nginx.ingress.kubernetes.io/backend-protocol: HTTPS
+    match_kind: "^Ingress$"
+
+  - type: stdout
+    # stdout print can be suppressed via config on stdin. This could be used
+    # to add additional pipeline steps before printing objects to stdout
+    when: "stdout_print | default(True)"
