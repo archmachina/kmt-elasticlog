@@ -3,18 +3,15 @@ apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   labels:
-    app: elasticlog
     component: kibana-ingress
   name: kibana-ingress-ds
 spec:
   selector:
     matchLabels:
-      app: elasticlog
       component: kibana-ingress
   template:
     metadata:
       labels:
-        app: elasticlog
         component: kibana-ingress
     spec:
       containers:

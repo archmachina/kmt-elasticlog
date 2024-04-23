@@ -7,8 +7,6 @@ data:
   metricbeat.yml: "{{ include_file_str('files/load-metricbeat.yml', template=True) }}"
 kind: ConfigMap
 metadata:
-  labels:
-    app: elasticlog
   name: beatload-files
 ---
 apiVersion: v1
@@ -23,6 +21,4 @@ data:
   kibana_port: "{{ kibana_port }}"
 kind: ConfigMap
 metadata:
-  labels:
-    app: elasticlog
   name: beatload-config

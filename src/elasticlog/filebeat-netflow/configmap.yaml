@@ -5,8 +5,6 @@ data:
   ilm-policy.json: "{{ include_file_str('files/ilm-policy.json') }}"
 kind: ConfigMap
 metadata:
-  labels:
-    app: elasticlog
   name: filebeat-netflow-files
 ---
 apiVersion: v1
@@ -20,6 +18,4 @@ data:
   netflow_host_port: "{{ netflow_host_port }}"
 kind: ConfigMap
 metadata:
-  labels:
-    app: elasticlog
   name: filebeat-netflow-config

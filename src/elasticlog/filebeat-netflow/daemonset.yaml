@@ -3,18 +3,15 @@ apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   labels:
-    app: elasticlog
     component: filebeat-netflow
   name: filebeat-netflow-ds
 spec:
   selector:
     matchLabels:
-      app: elasticlog
       component: filebeat-netflow
   template:
     metadata:
       labels:
-        app: elasticlog
         component: filebeat-netflow
     spec:
       containers:

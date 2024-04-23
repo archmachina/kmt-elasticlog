@@ -2,8 +2,6 @@
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  labels:
-    app: elasticlog
   name: kibana-cert
 spec:
   commonName: kibana

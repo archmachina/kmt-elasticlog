@@ -3,18 +3,15 @@ apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   labels:
-    app: elasticlog
     component: filebeat-syslog
   name: filebeat-syslog-ds
 spec:
   selector:
     matchLabels:
-      app: elasticlog
       component: filebeat-syslog
   template:
     metadata:
       labels:
-        app: elasticlog
         component: filebeat-syslog
     spec:
       containers:

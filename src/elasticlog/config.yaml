@@ -192,5 +192,8 @@ pipeline:
         - java_opts=logstash_java_opts
         - replicas=logstash_replicas
         - xpack_monitoring_uri=logstash_xpack_monitoring_uri
-
     when: import_logstash
+
+  - metadata:
+      labels:
+        app: elasticlog

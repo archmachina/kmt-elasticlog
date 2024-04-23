@@ -3,19 +3,16 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: elasticlog
     component: kibana
   name: kibana-dp
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: elasticlog
       component: kibana
   template:
     metadata:
       labels:
-        app: elasticlog
         component: kibana
     spec:
       containers:

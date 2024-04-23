@@ -6,8 +6,6 @@ data:
   0201_output_beats.conf: "{{ include_file_str('files/0201_output_beats.conf') }}"
 kind: ConfigMap
 metadata:
-  labels:
-    app: elasticlog
   name: logstash-pipeline-files
 ---
 apiVersion: v1
@@ -15,8 +13,6 @@ data:
   ingress.cfg: "{{ include_file_str('files/ingress.cfg', template=True) }}"
 kind: ConfigMap
 metadata:
-  labels:
-    app: elasticlog
   name: logstash-files
 ---
 apiVersion: v1
@@ -34,6 +30,4 @@ data:
     {{ xpack_monitoring_uri }}
 kind: ConfigMap
 metadata:
-  labels:
-    app: elasticlog
   name: logstash-config

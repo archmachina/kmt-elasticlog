@@ -3,19 +3,16 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: elasticlog
     component: beatload
   name: beatload-dp
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: elasticlog
       component: beatload
   template:
     metadata:
       labels:
-        app: elasticlog
         component: beatload
     spec:
       containers:

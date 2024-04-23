@@ -3,19 +3,16 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: elasticlog
     component: elastic-config
   name: elastic-config-dp
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: elasticlog
       component: elastic-config
   template:
     metadata:
       labels:
-        app: elasticlog
         component: elastic-config
     spec:
       containers:

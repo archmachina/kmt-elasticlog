@@ -3,19 +3,16 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: elasticlog
     component: logstash
   name: logstash-dp
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: elasticlog
       component: logstash
   template:
     metadata:
       labels:
-        app: elasticlog
         component: logstash
     spec:
       containers:

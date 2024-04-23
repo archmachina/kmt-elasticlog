@@ -2,8 +2,6 @@
 apiVersion: cert-manager.io/v1
 kind: Issuer
 metadata:
-  labels:
-    app: elasticlog
   name: elasticlog-ca-issuer
 spec:
   ca:
@@ -12,8 +10,6 @@ spec:
 apiVersion: cert-manager.io/v1
 kind: Issuer
 metadata:
-  labels:
-    app: elasticlog
   name: elasticlog-selfsigned-issuer
 spec:
   selfSigned: {}
@@ -21,8 +17,6 @@ spec:
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  labels:
-    app: elasticlog
   name: elasticlog-selfsigned-issuer-certificate
 spec:
   commonName: elasticlog-selfsigned-issuer-certificate

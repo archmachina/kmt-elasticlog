@@ -4,8 +4,6 @@ data:
   ingress.cfg: "{{ include_file_str('files/ingress.cfg', template=True) }}"
 kind: ConfigMap
 metadata:
-  labels:
-    app: elasticlog
   name: kibana-files
 ---
 apiVersion: v1
@@ -23,6 +21,4 @@ data:
   replicas: "{{ replicas }}"
 kind: ConfigMap
 metadata:
-  labels:
-    app: elasticlog
   name: kibana-config

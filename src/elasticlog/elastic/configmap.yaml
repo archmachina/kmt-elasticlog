@@ -6,8 +6,6 @@ data:
   usersetup.sh: "{{ include_file_str('files/usersetup.sh') }}"
 kind: ConfigMap
 metadata:
-  labels:
-    app: elasticlog
   name: elastic-files
 ---
 apiVersion: v1
@@ -22,6 +20,4 @@ data:
   storage_class: "{{ storage_class }}"
 kind: ConfigMap
 metadata:
-  labels:
-    app: elasticlog
   name: elastic-config

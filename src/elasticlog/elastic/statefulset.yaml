@@ -3,20 +3,17 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   labels:
-    app: elasticlog
     component: elastic
   name: elastic-ss
 spec:
   replicas: 3
   selector:
     matchLabels:
-      app: elasticlog
       component: elastic
   serviceName: elastic-svc
   template:
     metadata:
       labels:
-        app: elasticlog
         component: elastic
     spec:
       containers:
@@ -126,7 +123,6 @@ spec:
   volumeClaimTemplates:
   - metadata:
       labels:
-        app: elasticlog
         component: elastic
       name: elastic-pvc
     spec:

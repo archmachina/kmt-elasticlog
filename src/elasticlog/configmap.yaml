@@ -7,6 +7,4 @@ data:
   cert_renewBefore: 360h
 kind: ConfigMap
 metadata:
-  labels:
-    app: elasticlog
   name: elasticlog-cert-config

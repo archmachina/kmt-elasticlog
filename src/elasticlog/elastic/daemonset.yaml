@@ -3,18 +3,15 @@ apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   labels:
-    app: elasticlog
     component: elastic-ingress
   name: elastic-ingress-ds
 spec:
   selector:
     matchLabels:
-      app: elasticlog
       component: elastic-ingress
   template:
     metadata:
       labels:
-        app: elasticlog
         component: elastic-ingress
     spec:
       containers:
