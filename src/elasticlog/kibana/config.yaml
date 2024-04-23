@@ -3,7 +3,6 @@
 defaults:
   elastic_username: "{{ fail('elastic_username is required') }}"
   elastic_password: "{{ fail('elastic_password is required') }}"
-  kibana_key: "{{ fail('kibana_key is required') }}"
 
   elastic_hosts: '["https://elastic-svc:9200"]'
   elasticwait_cert_verify: "0"

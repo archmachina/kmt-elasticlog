@@ -28,7 +28,7 @@ spec:
         name: ingress
         ports:
         - containerPort: 9200
-          hostPort: "{{ ingress_host_port }}"
+          hostPort: {{ ingress_host_port }}
         volumeMounts:
         - mountPath: /usr/local/etc/haproxy/haproxy.cfg
           name: elastic-files

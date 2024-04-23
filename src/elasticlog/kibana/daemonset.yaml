@@ -28,7 +28,7 @@ spec:
         name: ingress
         ports:
         - containerPort: 5601
-          hostPort: "{{ ingress_host_port }}"
+          hostPort: {{ ingress_host_port }}
         volumeMounts:
         - mountPath: /usr/local/etc/haproxy/haproxy.cfg
           name: kibana-files

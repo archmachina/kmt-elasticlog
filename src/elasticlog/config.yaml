@@ -41,7 +41,6 @@ defaults:
   # kibana
   kibana_username: kibana_system
   kibana_password: "{{ kibana_system_password }}"
-  kibana_key: "{{ env.KIBANA_KEY }}"
 
   kibana_replicas: 1
 
@@ -167,7 +166,6 @@ pipeline:
       pass_vars:
         - elastic_username=kibana_username
         - elastic_password=kibana_password
-        - kibana_key
         - elastic_hosts=kibana_elastic_hosts
         - elasticwait_host=elastic_host
         - elasticwait_port=elastic_port
