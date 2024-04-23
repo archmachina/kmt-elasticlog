@@ -1,6 +1,0 @@
----
-
-kind: Component
-
-resources:
-  - daemonset.yaml
