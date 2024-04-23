@@ -10,7 +10,6 @@ accept_vars:
   - elastic_java_opts
 
   # kibana
-  - kibana_key
   - kibana_fqdn
   - kibana_ingress_host_port
   - kibana_publicbaseurl
@@ -37,11 +36,12 @@ defaults:
 
   # common
   elastic_username: elastic
-  elastic_password: "{{ fail('elastic_password is required') }}"
+  elastic_password: "{{ env.ELASTIC_PASSWORD }}"
 
   # kibana
   kibana_username: kibana_system
   kibana_password: "{{ kibana_system_password }}"
+  kibana_key: "{{ env.KIBANA_KEY }}"
 
   kibana_replicas: 1
 

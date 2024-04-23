@@ -1,6 +1,5 @@
-FROM archmachina/kmt:0.2.0
+FROM archmachina/kmt:0.3.1
 
-COPY manifest /work/manifest
-COPY config.yaml /work/config.yaml
+COPY elasticlog /work/elasticlog
 
-CMD [ "-c", "/work/config.yaml" ]
+CMD [ "/work/elasticlog" ]
