@@ -1,0 +1,32 @@
+---
+
+defaults:
+  elastic_username: "{{ fail('elastic_username is required') }}"
+  elastic_password: "{{ fail('elastic_password is required') }}"
+  kibana_key: "{{ fail('kibana_key is required') }}"
+
+  elastic_hosts: '["https://elastic-svc:9200"]'
+  elasticwait_cert_verify: "0"
+  elasticwait_host: elastic-svc
+  elasticwait_max_attempts: "15"
+  elasticwait_port: "9200"
+  elasticwait_time_wait: "30"
+  fqdn: kibana.local
+  ingress_host_port: "5601"
+  replicas: "1"
+  publicbaseurl: "{{ 'https://' + (fqdn | default('kibana.local')) }}"
+
+pipeline:
+  - import:
+      files:
+        - certificate.yaml
+        - configmap.yaml
+        - deployment.yaml
+        - ingress.yaml
+        - secret.yaml
+        - service.yaml
+
+  - import:
+      files:
+        - daemonset.yaml
+    when: "ingress_host_port | default('') != ''"

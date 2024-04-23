@@ -1,0 +1,12 @@
+---
+apiVersion: v1
+data:
+  ca_duration: 8760h
+  ca_renewBefore: 1000h
+  cert_duration: 2160h
+  cert_renewBefore: 360h
+kind: ConfigMap
+metadata:
+  labels:
+    app: elasticlog
+  name: elasticlog-cert-config

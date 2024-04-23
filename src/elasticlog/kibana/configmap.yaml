@@ -1,0 +1,28 @@
+---
+apiVersion: v1
+data:
+  ingress.cfg: "{{ include_file_str('files/ingress.cfg', template=True) }}"
+kind: ConfigMap
+metadata:
+  labels:
+    app: elasticlog
+  name: kibana-files
+---
+apiVersion: v1
+data:
+  elastic_hosts: >-
+    {{ elastic_hosts }}
+  elasticwait_cert_verify: "{{ elasticwait_cert_verify }}"
+  elasticwait_host: "{{ elasticwait_host }}"
+  elasticwait_max_attempts: "{{ elasticwait_max_attempts }}"
+  elasticwait_port: "{{ elasticwait_port }}"
+  elasticwait_time_wait: "{{ elasticwait_time_wait }}"
+  fqdn: "{{ fqdn }}"
+  ingress_host_port: "{{ ingress_host_port }}"
+  publicbaseurl: "{{ publicbaseurl }}"
+  replicas: "{{ replicas }}"
+kind: ConfigMap
+metadata:
+  labels:
+    app: elasticlog
+  name: kibana-config

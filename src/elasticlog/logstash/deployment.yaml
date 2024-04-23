@@ -1,0 +1,114 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: elasticlog
+    component: logstash
+  name: logstash-dp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: elasticlog
+      component: logstash
+  template:
+    metadata:
+      labels:
+        app: elasticlog
+        component: logstash
+    spec:
+      containers:
+      - env:
+        - name: ES_JAVA_OPTS
+          valueFrom:
+            configMapKeyRef:
+              key: java_opts
+              name: logstash-config
+        - name: ELASTIC_URI
+          valueFrom:
+            configMapKeyRef:
+              key: elastic_uri
+              name: logstash-config
+        - name: XPACK_MONITORING_ELASTICSEARCH_HOSTS
+          valueFrom:
+            configMapKeyRef:
+              key: xpack_monitoring_uri
+              name: logstash-config
+        - name: XPACK_MONITORING_ELASTICSEARCH_SSL_CERTIFICATE_AUTHORITY
+          value: /usr/share/logstash/certs/ca.crt
+        - name: XPACK_MONITORING_ELASTICSEARCH_USERNAME
+          valueFrom:
+            secretKeyRef:
+              key: elastic_username
+              name: logstash-credentials
+        - name: XPACK_MONITORING_ELASTICSEARCH_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: elastic_password
+              name: logstash-credentials
+        - name: ELASTIC_USERNAME
+          valueFrom:
+            secretKeyRef:
+              key: elastic_username
+              name: logstash-credentials
+        - name: ELASTIC_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: elastic_password
+              name: logstash-credentials
+        image: docker.elastic.co/logstash/logstash:8.5.3-amd64
+        name: logstash
+        ports:
+        - containerPort: 5044
+        volumeMounts:
+        - mountPath: /usr/share/logstash/certs/
+          name: logstash-cert
+        - mountPath: /usr/share/logstash/pipeline
+          name: logstash-pipeline-files
+      initContainers:
+      - env:
+        - name: CERT_VERIFY
+          valueFrom:
+            configMapKeyRef:
+              key: elasticwait_cert_verify
+              name: logstash-config
+        - name: TIME_WAIT
+          valueFrom:
+            configMapKeyRef:
+              key: elasticwait_time_wait
+              name: logstash-config
+        - name: MAX_ATTEMPTS
+          valueFrom:
+            configMapKeyRef:
+              key: elasticwait_max_attempts
+              name: logstash-config
+        - name: ELASTIC_HOST
+          valueFrom:
+            configMapKeyRef:
+              key: elastic_host
+              name: logstash-config
+        - name: ELASTIC_PORT
+          valueFrom:
+            configMapKeyRef:
+              key: elastic_port
+              name: logstash-config
+        - name: ELASTIC_USERNAME
+          valueFrom:
+            secretKeyRef:
+              key: elastic_username
+              name: logstash-credentials
+        - name: ELASTIC_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: elastic_password
+              name: logstash-credentials
+        image: archmachina/elasticwait:0.1.3
+        name: wait
+      volumes:
+      - name: logstash-cert
+        secret:
+          secretName: logstash-cert
+      - configMap:
+          name: logstash-pipeline-files
+        name: logstash-pipeline-files

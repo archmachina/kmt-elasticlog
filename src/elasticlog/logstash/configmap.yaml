@@ -1,0 +1,39 @@
+---
+apiVersion: v1
+data:
+  0001_input_beats.conf: "{{ include_file_str('files/0001_input_beats.conf') }}"
+  0102_filter.conf: "{{ include_file_str('files/0102_filter.conf') }}"
+  0201_output_beats.conf: "{{ include_file_str('files/0201_output_beats.conf') }}"
+kind: ConfigMap
+metadata:
+  labels:
+    app: elasticlog
+  name: logstash-pipeline-files
+---
+apiVersion: v1
+data:
+  ingress.cfg: "{{ include_file_str('files/ingress.cfg', template=True) }}"
+kind: ConfigMap
+metadata:
+  labels:
+    app: elasticlog
+  name: logstash-files
+---
+apiVersion: v1
+data:
+  elastic_host: "{{ elastic_host }}"
+  elastic_port: "{{ elastic_port }}"
+  elastic_uri: "{{ elastic_uri }}"
+  elasticwait_cert_verify: "{{ elasticwait_cert_verify }}"
+  elasticwait_max_attempts: "{{ elasticwait_max_attempts }}"
+  elasticwait_time_wait: "{{ elasticwait_time_wait }}"
+  ingress_host_port: "{{ ingress_host_port }}"
+  java_opts: "{{ java_opts }}"
+  replicas: "{{ replicas }}"
+  xpack_monitoring_uri: >-
+    {{ xpack_monitoring_uri }}
+kind: ConfigMap
+metadata:
+  labels:
+    app: elasticlog
+  name: logstash-config

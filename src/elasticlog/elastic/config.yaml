@@ -1,0 +1,42 @@
+---
+
+defaults:
+  elastic_password: "{{ fail('elastic_password is required') }}"
+
+  filebeat_password: "{{ fail('filebeat_password is required') }}"
+  filebeat_username: "{{ fail('filebeat_username is required') }}"
+
+  beats_system_password: "{{ fail('beats_system_password is required') }}"
+  kibana_system_password: "{{ fail('kibana_system_password is required') }}"
+  logstash_system_password: "{{ fail('logstash_system_password is required') }}"
+
+  localadmin_password: "{{ fail('localadmin_password is required') }}"
+  localadmin_username: "{{ fail('localadmin_username is required') }}"
+
+  logstash_password: "{{ fail('logstash_password is required') }}"
+  logstash_username: "{{ fail('logstash_username is required') }}"
+
+  cluster_name: elastic
+  discovery_seed_hosts: elastic-ss-0.elastic-svc
+  fqdn: elastic.local
+  ingress_host_port: "9200"
+  initial_master_nodes: elastic-ss-0
+  java_opts: -Xms3g -Xmx3g
+  replicas: "3"
+  storage_class: default
+
+pipeline:
+  - import:
+      files:
+        - certificate.yaml
+        - configmap.yaml
+        - deployment.yaml
+        - ingress.yaml
+        - secret.yaml
+        - service.yaml
+        - statefulset.yaml
+
+  - import:
+      files:
+        - daemonset.yaml
+    when: "ingress_host_port | default('') != ''"

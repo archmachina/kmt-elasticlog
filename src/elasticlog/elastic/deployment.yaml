@@ -1,0 +1,93 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: elasticlog
+    component: elastic-config
+  name: elastic-config-dp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: elasticlog
+      component: elastic-config
+  template:
+    metadata:
+      labels:
+        app: elasticlog
+        component: elastic-config
+    spec:
+      containers:
+      - image: gcr.io/google_containers/pause
+        name: pause
+      initContainers:
+      - args:
+        - /config.py
+        command:
+        - python3
+        env:
+        - name: ELASTIC_HOST
+          value: elastic-svc
+        - name: ELASTIC_PORT
+          value: "9200"
+        - name: CONNECTION_USERNAME
+          valueFrom:
+            secretKeyRef:
+              key: localadmin_username
+              name: elastic-credentials
+        - name: CONNECTION_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: localadmin_password
+              name: elastic-credentials
+        - name: ELASTIC_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: elastic_password
+              name: elastic-credentials
+        - name: LOGSTASH_SYSTEM_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: logstash_system_password
+              name: elastic-credentials
+        - name: BEATS_SYSTEM_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: beats_system_password
+              name: elastic-credentials
+        - name: KIBANA_SYSTEM_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: kibana_system_password
+              name: elastic-credentials
+        - name: LOGSTASH_USERNAME
+          valueFrom:
+            secretKeyRef:
+              key: logstash_username
+              name: elastic-credentials
+        - name: LOGSTASH_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: logstash_password
+              name: elastic-credentials
+        - name: FILEBEAT_USERNAME
+          valueFrom:
+            secretKeyRef:
+              key: filebeat_username
+              name: elastic-credentials
+        - name: FILEBEAT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: filebeat_password
+              name: elastic-credentials
+        image: archmachina/pyapiutil
+        name: config
+        volumeMounts:
+        - mountPath: /config.py
+          name: elastic-files
+          subPath: config.py
+      volumes:
+      - configMap:
+          name: elastic-files
+        name: elastic-files

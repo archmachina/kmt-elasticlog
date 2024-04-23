@@ -1,0 +1,42 @@
+---
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  labels:
+    app: elasticlog
+    component: logstash-ingress
+  name: logstash-ingress-ds
+spec:
+  selector:
+    matchLabels:
+      app: elasticlog
+      component: logstash-ingress
+  template:
+    metadata:
+      labels:
+        app: elasticlog
+        component: logstash-ingress
+    spec:
+      containers:
+      - env:
+        - name: LOGSTASH_HOST
+          value: logstash-svc
+        - name: NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: CLUSTER_DOMAIN
+          value: svc.cluster.local
+        image: docker.io/library/haproxy:2.7.1
+        name: ingress
+        ports:
+        - containerPort: 5044
+          hostPort: "{{ ingress_host_port }}"
+        volumeMounts:
+        - mountPath: /usr/local/etc/haproxy/haproxy.cfg
+          name: logstash-files
+          subPath: ingress.cfg
+      volumes:
+      - configMap:
+          name: logstash-files
+        name: logstash-files

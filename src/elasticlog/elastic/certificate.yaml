@@ -1,0 +1,20 @@
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  labels:
+    app: elasticlog
+  name: elastic-cert
+spec:
+  commonName: elastic
+  dnsNames:
+  - elastic.local
+  - elastic-svc
+  - {{ fqdn }}
+  duration: 2160h
+  issuerRef:
+    group: cert-manager.io
+    kind: Issuer
+    name: elasticlog-ca-issuer
+  renewBefore: 360h
+  secretName: elastic-cert

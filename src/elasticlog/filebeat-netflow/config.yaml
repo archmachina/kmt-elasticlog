@@ -1,0 +1,22 @@
+---
+
+defaults:
+  elastic_username: "{{ fail('elastic_username is required') }}"
+  elastic_password: "{{ fail('elastic_password is required') }}"
+
+  elastic_host: elastic-svc
+  elastic_port: "9200"
+  elasticwait_cert_verify: "0"
+  elasticwait_max_attempts: "60"
+  elasticwait_time_wait: "30"
+  index_replicas: "1"
+  index_shards: "1"
+  netflow_host_port: "2055"
+
+pipeline:
+  - import:
+      files:
+        - certificate.yaml
+        - configmap.yaml
+        - daemonset.yaml
+        - secret.yaml

@@ -1,0 +1,30 @@
+---
+
+defaults:
+  elastic_username: "{{ fail('elastic_username is required') }}"
+  elastic_password: "{{ fail('elastic_password is required') }}"
+
+  elastic_host: elastic-svc
+  elastic_port: "9200"
+  elastic_uri: https://elastic-svc:9200
+  elasticwait_cert_verify: "0"
+  elasticwait_max_attempts: "60"
+  elasticwait_time_wait: "30"
+  ingress_host_port: "5044"
+  java_opts: -Xms2g -Xmx2g
+  replicas: "1"
+  xpack_monitoring_uri: '["https://elastic-svc:9200"]'
+
+pipeline:
+  - import:
+      files:
+        - certificate.yaml
+        - configmap.yaml
+        - deployment.yaml
+        - secret.yaml
+        - service.yaml
+
+  - import:
+      files:
+        - daemonset.yaml
+    when: "ingress_host_port | default('') != ''"

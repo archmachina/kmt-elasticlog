@@ -1,0 +1,196 @@
+---
+
+accept_vars:
+
+  # elastic
+  - elastic_fqdn
+  - elastic_storage_class
+  - elastic_ingress_host_port
+  - elastic_cluster_name
+  - elastic_java_opts
+
+  # kibana
+  - kibana_key
+  - kibana_fqdn
+  - kibana_ingress_host_port
+  - kibana_publicbaseurl
+
+  # beatload
+  - beatload_index_replicas
+  - beatload_index_shards
+
+  # filebeat
+  - filebeat_index_replicas
+  - filebeat_index_shards
+  - filebeat_netflow_host_port
+
+  # logstash
+  - logstash_ingress_host_port
+  - logstash_java_opts
+
+defaults:
+  import_beatload: true
+  import_filebeat_syslog: true
+  import_filebeat_netflow: true
+  import_kibana: true
+  import_logstash: true
+
+  # common
+  elastic_username: elastic
+  elastic_password: "{{ fail('elastic_password is required') }}"
+
+  # kibana
+  kibana_username: kibana_system
+  kibana_password: "{{ kibana_system_password }}"
+
+  kibana_replicas: 1
+
+  # elastic
+  localadmin_username: "localadmin"
+  localadmin_password: "{{ elastic_password }}"
+
+  kibana_system_password: "{{ elastic_password }}"
+  logstash_system_password: "{{ elastic_password }}"
+  beats_system_password: "{{ elastic_password }}"
+
+  elastic_replicas: 1
+
+  # logstash
+  logstash_username: "logstash_writer"
+  logstash_password: "{{ elastic_password }}"
+
+  logstash_replicas: 1
+
+  # filebeat
+  filebeat_username: "filebeat_writer"
+  filebeat_password: "{{ elastic_password }}"
+
+  # beatload
+  beatload_username: "elastic"
+  beatload_password: "{{ elastic_password }}"
+
+vars:
+  elastic_host: elastic-svc
+  elastic_port: 9200
+  elastic_uri: https://elastic-svc:9200
+  elastic_discovery_seed_hosts: elastic-ss-0.elastic-svc
+  elastic_initial_master_nodes: elastic-ss-0
+
+  kibana_host: kibana-svc
+  kibana_port: 5601
+  kibana_elastic_hosts: '["https://elastic-svc:9200"]'
+
+  logstash_xpack_monitoring_uri: '["https://elastic-svc:9200"]'
+
+pipeline:
+  - import:
+      files:
+        - ca.yaml
+        - configmap.yaml
+
+  - pipeline:
+      path: elastic
+      pass_vars:
+        - elastic_password
+
+        - beats_system_password
+        - kibana_system_password
+        - logstash_system_password
+
+        - localadmin_username
+        - localadmin_password
+
+        - logstash_username
+        - logstash_password
+
+        - filebeat_username
+        - filebeat_password
+
+        - ingress_host_port=elastic_ingress_host_port
+        - storage_class=elastic_storage_class
+        - fqdn=elastic_fqdn
+
+        - cluster_name=elastic_cluster_name
+        - java_opts=elastic_java_opts
+        - discovery_seed_hosts=elastic_discovery_seed_hosts
+        - initial_master_nodes=elastic_initial_master_nodes
+        - replicas=elastic_replicas
+
+  - pipeline:
+      path: beatload
+      pass_vars:
+        - elastic_username=beatload_username
+        - elastic_password=beatload_password
+        - kibana_username=beatload_username
+        - kibana_password=beatload_password
+
+        - elastic_host
+        - elastic_port
+
+        - kibana_host
+        - kibana_port
+
+        - index_replicas=beatload_index_replicas
+        - index_shards=beatload_index_shards
+    when: import_beatload
+
+  - pipeline:
+      path: filebeat-syslog
+      pass_vars:
+        - elastic_username=filebeat_username
+        - elastic_password=filebeat_password
+
+        - elastic_host
+        - elastic_port
+
+        - index_replicas=filebeat_index_replicas
+        - index_shards=filebeat_index_shards
+    when: import_filebeat_syslog
+
+  - pipeline:
+      path: filebeat-netflow
+      pass_vars:
+        - elastic_username=filebeat_username
+        - elastic_password=filebeat_password
+
+        - elastic_host
+        - elastic_port
+
+        - index_replicas=filebeat_index_replicas
+        - index_shards=filebeat_index_shards
+
+        - netflow_host_port=filebeat_netflow_host_port
+    when: import_filebeat_netflow
+
+  - pipeline:
+      path: kibana
+      pass_vars:
+        - elastic_username=kibana_username
+        - elastic_password=kibana_password
+        - kibana_key
+        - elastic_hosts=kibana_elastic_hosts
+        - elasticwait_host=elastic_host
+        - elasticwait_port=elastic_port
+
+        - ingress_host_port=kibana_ingress_host_port
+        - fqdn=kibana_fqdn
+        - replicas=kibana_replicas
+        - publicbaseurl=kibana_publicbaseurl
+    when: import_kibana
+
+  - pipeline:
+      path: logstash
+      pass_vars:
+        - elastic_username=logstash_username
+        - elastic_password=logstash_password
+
+        - elastic_host
+        - elastic_port
+        - elastic_uri
+
+        - ingress_host_port=logstash_ingress_host_port
+        - java_opts=logstash_java_opts
+        - replicas=logstash_replicas
+        - xpack_monitoring_uri=logstash_xpack_monitoring_uri
+
+    when: import_logstash

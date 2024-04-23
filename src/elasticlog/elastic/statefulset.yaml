@@ -1,0 +1,141 @@
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  labels:
+    app: elasticlog
+    component: elastic
+  name: elastic-ss
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: elasticlog
+      component: elastic
+  serviceName: elastic-svc
+  template:
+    metadata:
+      labels:
+        app: elasticlog
+        component: elastic
+    spec:
+      containers:
+      - env:
+        - name: cluster.name
+          valueFrom:
+            configMapKeyRef:
+              key: cluster_name
+              name: elastic-config
+        - name: cluster.initial_master_nodes
+          valueFrom:
+            configMapKeyRef:
+              key: initial_master_nodes
+              name: elastic-config
+        - name: discovery.seed_hosts
+          valueFrom:
+            configMapKeyRef:
+              key: discovery_seed_hosts
+              name: elastic-config
+        - name: transport.port
+          value: "9300"
+        - name: transport.host
+          value: 0.0.0.0
+        - name: ELASTIC_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: elastic_password
+              name: elastic-credentials
+        - name: xpack.security.enabled
+          value: "true"
+        - name: xpack.security.transport.ssl.enabled
+          value: "true"
+        - name: xpack.security.transport.ssl.verification_mode
+          value: certificate
+        - name: xpack.security.transport.ssl.key
+          value: /usr/share/elasticsearch/config/certs/tls.key
+        - name: xpack.security.transport.ssl.certificate
+          value: /usr/share/elasticsearch/config/certs/tls.crt
+        - name: xpack.security.transport.ssl.certificate_authorities
+          value: /usr/share/elasticsearch/config/certs/ca.crt
+        - name: xpack.security.http.ssl.enabled
+          value: "true"
+        - name: xpack.security.http.ssl.key
+          value: /usr/share/elasticsearch/config/certs/tls.key
+        - name: xpack.security.http.ssl.certificate
+          value: /usr/share/elasticsearch/config/certs/tls.crt
+        - name: xpack.security.http.ssl.certificate_authorities
+          value: /usr/share/elasticsearch/config/certs/ca.crt
+        - name: xpack.security.http.ssl.client_authentication
+          value: optional
+        - name: ES_JAVA_OPTS
+          valueFrom:
+            configMapKeyRef:
+              key: java_opts
+              name: elastic-config
+        image: docker.elastic.co/elasticsearch/elasticsearch:8.5.3-amd64
+        name: elastic
+        ports:
+        - containerPort: 9200
+        volumeMounts:
+        - mountPath: /usr/share/elasticsearch/data
+          name: elastic-pvc
+        - mountPath: /usr/share/elasticsearch/config/certs
+          name: elastic-cert
+          readOnly: true
+        - mountPath: /usr/share/elasticsearch/config/users
+          name: elastic-users
+          readOnly: true
+          subPath: users
+        - mountPath: /usr/share/elasticsearch/config/users_roles
+          name: elastic-users
+          readOnly: true
+          subPath: users_roles
+      initContainers:
+      - command:
+        - sh
+        - -c
+        - . /usersetup.sh
+        env:
+        - name: LOCALADMIN_USERNAME
+          valueFrom:
+            secretKeyRef:
+              key: localadmin_username
+              name: elastic-credentials
+        - name: LOCALADMIN_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: localadmin_password
+              name: elastic-credentials
+        image: docker.elastic.co/elasticsearch/elasticsearch:8.5.3-amd64
+        name: user-setup
+        volumeMounts:
+        - mountPath: /usr/share/elasticsearch/config
+          name: elastic-users
+        - mountPath: /usersetup.sh
+          name: elastic-files
+          subPath: usersetup.sh
+      volumes:
+      - name: elastic-cert
+        secret:
+          secretName: elastic-cert
+      - emptyDir: {}
+        name: elastic-users
+      - configMap:
+          name: elastic-files
+        name: elastic-files
+  volumeClaimTemplates:
+  - metadata:
+      labels:
+        app: elasticlog
+        component: elastic
+      name: elastic-pvc
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: 10Gi
+      selector:
+        matchLabels:
+          component: elastic
+      storageClassName: local-elasticlog-sc

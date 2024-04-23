@@ -1,0 +1,27 @@
+---
+apiVersion: v1
+data:
+  config.py: "{{ include_file_str('files/config.py')}}"
+  ingress.cfg: "{{ include_file_str('files/ingress.cfg', template=True) }}"
+  usersetup.sh: "{{ include_file_str('files/usersetup.sh') }}"
+kind: ConfigMap
+metadata:
+  labels:
+    app: elasticlog
+  name: elastic-files
+---
+apiVersion: v1
+data:
+  cluster_name: "{{ cluster_name }}"
+  discovery_seed_hosts: "{{ discovery_seed_hosts }}"
+  fqdn: "{{ fqdn }}"
+  ingress_host_port: "{{ ingress_host_port }}"
+  initial_master_nodes: "{{ initial_master_nodes }}"
+  java_opts: "{{ java_opts }}"
+  replicas: "{{ replicas }}"
+  storage_class: "{{ storage_class }}"
+kind: ConfigMap
+metadata:
+  labels:
+    app: elasticlog
+  name: elastic-config

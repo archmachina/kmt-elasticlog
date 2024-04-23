@@ -1,0 +1,25 @@
+---
+apiVersion: v1
+data:
+  filebeat.yml: "{{ include_file_str('files/filebeat-netflow.yml', template=True) }}"
+  ilm-policy.json: "{{ include_file_str('files/ilm-policy.json') }}"
+kind: ConfigMap
+metadata:
+  labels:
+    app: elasticlog
+  name: filebeat-netflow-files
+---
+apiVersion: v1
+data:
+  elastic_host: "{{ elastic_host }}"
+  elastic_port: "{{ elastic_port }}"
+  elasticwait_cert_verify: "{{ elasticwait_cert_verify }}"
+  elasticwait_max_attempts: "{{ elasticwait_max_attempts }}"
+  elasticwait_time_wait: "{{ elasticwait_time_wait }}"
+  index_replicas: "{{ index_replicas }}"
+  netflow_host_port: "{{ netflow_host_port }}"
+kind: ConfigMap
+metadata:
+  labels:
+    app: elasticlog
+  name: filebeat-netflow-config

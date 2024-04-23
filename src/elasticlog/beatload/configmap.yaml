@@ -1,0 +1,28 @@
+---
+apiVersion: v1
+data:
+  auditbeat.yml: "{{ include_file_str('files/load-auditbeat.yml', template=True) }}"
+  filebeat.yml: "{{ include_file_str('files/load-filebeat.yml', template=True) }}"
+  ilm-policy.json: "{{ include_file_str('files/ilm-policy.json', template=True) }}"
+  metricbeat.yml: "{{ include_file_str('files/load-metricbeat.yml', template=True) }}"
+kind: ConfigMap
+metadata:
+  labels:
+    app: elasticlog
+  name: beatload-files
+---
+apiVersion: v1
+data:
+  elastic_host: "{{ elastic_host }}"
+  elastic_port: "{{ elastic_port }}"
+  elasticwait_cert_verify: "{{ elasticwait_cert_verify }}"
+  elasticwait_max_attempts: "{{ elasticwait_max_attempts }}"
+  elasticwait_time_wait: "{{ elasticwait_time_wait }}"
+  index_replicas: "{{ index_replicas }}"
+  kibana_host: "{{ kibana_host }}"
+  kibana_port: "{{ kibana_port }}"
+kind: ConfigMap
+metadata:
+  labels:
+    app: elasticlog
+  name: beatload-config
