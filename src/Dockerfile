@@ -1,4 +1,4 @@
-FROM archmachina/kmt:0.3.1
+FROM archmachina/kmt:0.3.3
 
 COPY elasticlog /work/elasticlog
 
