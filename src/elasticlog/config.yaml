@@ -14,6 +14,10 @@ accept_vars:
   - kibana_ingress_host_port
   - kibana_publicbaseurl
 
+  - kibana_saved_objects_key
+  - kibana_reporting_key
+  - kibana_security_key
+
   # beatload
   - beatload_index_replicas
   - beatload_index_shards
@@ -174,6 +178,11 @@ pipeline:
         - fqdn=kibana_fqdn
         - replicas=kibana_replicas
         - publicbaseurl=kibana_publicbaseurl
+
+        - saved_objects_key=kibana_saved_objects_key
+        - reporting_key=kibana_reporting_key
+        - security_key=kibana_security_key
+
     when: import_kibana
 
   - pipeline:

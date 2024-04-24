@@ -47,6 +47,27 @@ spec:
           value: /usr/share/kibana/config/certs/tls.crt
         - name: SERVER_SSL_KEY
           value: /usr/share/kibana/config/certs/tls.key
+{% if saved_objects_key is defined %}
+        - name: XPACK_ENCRYPTEDSAVEDOBJECTS_ENCRYPTIONKEY
+          valueFrom:
+            secretKeyRef:
+              key: saved_objects_key
+              name: kibana-credentials
+{% endif %}
+{% if reporting_key is defined %}
+        - name: XPACK_REPORTING_ENCRYPTIONKEY
+          valueFrom:
+            secretKeyRef:
+              key: reporting_key
+              name: kibana-credentials
+{% endif %}
+{% if security_key is defined %}
+        - name: XPACK_SECURITY_ENCRYPTIONKEY
+          valueFrom:
+            secretKeyRef:
+              key: security_key
+              name: kibana-credentials
+{% endif %}
         image: docker.elastic.co/kibana/kibana:8.5.3-amd64
         name: kibana
         ports:

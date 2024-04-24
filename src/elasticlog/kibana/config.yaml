@@ -1,5 +1,10 @@
 ---
 
+accept_vars:
+  - saved_objects_key
+  - reporting_key
+  - security_key
+
 defaults:
   elastic_username: "{{ fail('elastic_username is required') }}"
   elastic_password: "{{ fail('elastic_password is required') }}"
